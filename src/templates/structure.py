@@ -24,7 +24,7 @@ STRUCTURE = {
         }
     },
     "labcmdr":{
-        "labconfig.json":None,
+        "labconfig.yaml":None,
     },
     "scans": {  # Nice to have nmap/scan outputs separate
         "nmap": {}

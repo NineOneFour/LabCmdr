@@ -2,7 +2,7 @@
 context.py - Lab context detection and configuration management
 """
 
-import json
+import yaml
 from pathlib import Path
 from ..config import LAB_CONFIG
 
@@ -14,10 +14,10 @@ class LabNotFoundError(Exception):
 
 def find_lab_root(start_path=None):
     """
-    Find lab root directory by searching for labcmdr/labconfig.json
+    Find lab root directory by searching for labcmdr/labconfig.yaml
     
     Works like git - searches current directory and all parent directories
-    until it finds a labconfig.json file.
+    until it finds a labconfig.yaml file.
     
     Args:
         start_path: Optional starting directory (defaults to current working directory)
@@ -32,7 +32,7 @@ def find_lab_root(start_path=None):
     
     # Search current directory and all parents
     for directory in [current] + list(current.parents):
-        config_path = directory / "labcmdr" / "labconfig.json"
+        config_path = directory / "labcmdr" / "labconfig.yaml"
         if config_path.exists():
             return directory
     
@@ -44,7 +44,7 @@ def find_lab_root(start_path=None):
 
 def load_lab_config(lab_root=None):
     """
-    Load labconfig.json from lab directory
+    Load labconfig.yaml from lab directory
     
     Args:
         lab_root: Optional lab root path. If None, will search for lab root.
@@ -54,19 +54,19 @@ def load_lab_config(lab_root=None):
     
     Raises:
         LabNotFoundError: If lab root not found
-        FileNotFoundError: If labconfig.json doesn't exist
-        json.JSONDecodeError: If labconfig.json is corrupted
+        FileNotFoundError: If labconfig.yaml doesn't exist
+        yaml.YAMLError: If labconfig.yaml is corrupted
     """
     if lab_root is None:
         lab_root = find_lab_root()
     
-    config_path = lab_root / "labcmdr" / "labconfig.json"
+    config_path = lab_root / "labcmdr" / "labconfig.yaml"
     
     if not config_path.exists():
-        raise FileNotFoundError(f"labconfig.json not found at {config_path}")
+        raise FileNotFoundError(f"labconfig.yaml not found at {config_path}")
     
     with open(config_path, 'r') as f:
-        config = json.load(f)
+        config = yaml.safe_load(f)
     
     # Ensure structure matches LAB_CONFIG template
     config = ensure_config_structure(config)
@@ -76,7 +76,7 @@ def load_lab_config(lab_root=None):
 
 def save_lab_config(config, lab_root=None):
     """
-    Save labconfig.json to lab directory
+    Save labconfig.yaml to lab directory
     
     Args:
         config: Configuration dictionary to save
@@ -85,7 +85,7 @@ def save_lab_config(config, lab_root=None):
     if lab_root is None:
         lab_root = find_lab_root()
     
-    config_path = lab_root / "labcmdr" / "labconfig.json"
+    config_path = lab_root / "labcmdr" / "labconfig.yaml"
     
     # Ensure directory exists
     config_path.parent.mkdir(parents=True, exist_ok=True)
@@ -93,7 +93,7 @@ def save_lab_config(config, lab_root=None):
     # Write atomically using temp file
     temp_path = config_path.with_suffix('.tmp')
     with open(temp_path, 'w') as f:
-        json.dump(config, f, indent=4)
+        yaml.dump(config, f, default_flow_style=False, sort_keys=False)
     
     # Atomic rename
     temp_path.replace(config_path)

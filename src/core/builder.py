@@ -1,5 +1,5 @@
 import os
-import json
+import yaml, json
 from pathlib import Path
 from datetime import datetime
 from .file_utils import check_overwrite
@@ -9,7 +9,7 @@ from .copy_files import copy_files
 
 
 def save_context(context, lab_path):
-    """Save context as JSON to .labconfig in the lab folder"""
+    """Save context as yaml to .labconfig in the lab folder"""
     # Create a copy of the LAB_CONFIG structure
     config = json.loads(json.dumps(LAB_CONFIG))  # Deep copy
     
@@ -39,14 +39,14 @@ def save_context(context, lab_path):
         config['credentials']['password'] = context.get('password', '')
     
     # Create the labcmdr directory if it doesn't exist
-    config_path = Path(lab_path) / 'labcmdr' / 'labconfig.json'
+    config_path = Path(lab_path) / 'labcmdr' / 'labconfig.yaml'
     config_path.parent.mkdir(parents=True, exist_ok=True)
     
     # Save the config
     with open(config_path, 'w') as f:
-        json.dump(config, f, indent=4)
+        yaml.dump(config, f, default_flow_style=False, sort_keys=False)
     
-    print(f"{Colors.GREEN}[+] Saved configuration to labcmdr/labconfig.json{Colors.NC}")
+    print(f"{Colors.GREEN}[+] Saved configuration to labcmdr/labconfig.yaml{Colors.NC}")
 
 def create_structure(dir_path, structure=None, overwrite_mode=None):
     """
