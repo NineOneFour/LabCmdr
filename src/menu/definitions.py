@@ -15,11 +15,6 @@ from .context import (
     has_credentials
 )
 from .wrappers import (
-    wrap_quick_ip_update,
-    wrap_view_config,
-    wrap_update_hosts,
-    wrap_remove_hosts,
-    wrap_view_hosts,
     wrap_start_server,
     wrap_stop_server,
     wrap_restart_server,
@@ -39,18 +34,21 @@ from .wrappers import (
     wrap_edit_metadata_field,
     wrap_edit_network_field,
     wrap_edit_credentials_field,
-    wrap_add_fqdn,
-    wrap_remove_fqdn,
-    wrap_list_fqdns,
+    wrap_view_server_log,
 )
 
-from .wrappers import (
-    wrap_start_server,
-    wrap_stop_server,
-    wrap_restart_server,
-    wrap_server_status,
-    wrap_view_server_log,  # NEW IMPORT
-    # ... other imports
+from ..actions.update_lab import (
+    quick_ip_update,
+    view_config,
+    add_fqdn,
+    remove_fqdn,
+    list_fqdns,
+)
+
+from ..actions.manage_host import (
+    update_hosts,
+    remove_from_hosts,
+    view_hosts_entries,
 )
 
 
@@ -216,9 +214,9 @@ NETWORK_EDITOR_MENU = {
             "4": ("Edit Domain Controller", wrap_edit_network_field),
         },
         "FQDN Management": {
-            "5": ("Add FQDN", wrap_add_fqdn),
-            "6": ("Remove FQDN", wrap_remove_fqdn),
-            "7": ("List FQDNs", wrap_list_fqdns),
+            "5": ("Add FQDN", add_fqdn),
+            "6": ("Remove FQDN", remove_fqdn),
+            "7": ("List FQDNs", list_fqdns),
         },
 
     }
@@ -257,7 +255,7 @@ CONFIG_MENU = {
     },
     "items": {
         "Quick Actions": {
-            "1": ("Update Target IP", wrap_quick_ip_update),
+            "1": ("Update Target IP", quick_ip_update),
         },
         "Section Editors": {
             "2": ("Edit Metadata", METADATA_EDITOR_MENU),
@@ -287,9 +285,9 @@ HOSTS_MANAGEMENT_MENU = {
     },
     "items": {
         "Actions": {
-            "1": ("Update /etc/hosts", wrap_update_hosts),
-            "2": ("Remove from /etc/hosts", wrap_remove_hosts),
-            "3": ("View Current Entries", wrap_view_hosts),
+            "1": ("Update /etc/hosts", update_hosts),
+            "2": ("Remove from /etc/hosts", remove_from_hosts),
+            "3": ("View Current Entries", view_hosts_entries),
         },
 
     }
@@ -305,7 +303,7 @@ LAB_INFO_MENU = {
     "items": {
         "View": {
             "1": ("Show Complete Lab Info", wrap_show_lab_info),
-            "2": ("View Configuration", wrap_view_config),
+            "2": ("View Configuration", view_config),
         },
         "Open Directories": {
             "3": ("Open Notes Directory", wrap_open_notes),

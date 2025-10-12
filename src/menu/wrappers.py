@@ -7,11 +7,6 @@ import sys
 from ..config import Colors
 from ..actions.update_lab import (
     edit_field,
-    quick_ip_update,
-    view_config,
-    add_fqdn,
-    remove_fqdn,
-    list_fqdns,
 )
 from ..actions.manage_host import (
     update_hosts,
@@ -48,14 +43,6 @@ from ..actions.server import (
 #   CONFIG ACTIONS
 # ======================
 
-def wrap_quick_ip_update(config):
-    """Wrapper for quick IP update"""
-    quick_ip_update()
-
-
-def wrap_view_config(config):
-    """Wrapper for viewing config"""
-    view_config()
 
 
 def wrap_edit_metadata_field(config):
@@ -97,21 +84,6 @@ def wrap_edit_credentials_field(config):
         print(f"{Colors.RED}[!] No field specified{Colors.NC}")
 
 
-def wrap_add_fqdn(config):
-    """Wrapper for adding FQDN"""
-    add_fqdn()
-
-
-def wrap_remove_fqdn(config):
-    """Wrapper for removing FQDN"""
-    remove_fqdn()
-
-
-def wrap_list_fqdns(config):
-    """Wrapper for listing FQDNs"""
-    list_fqdns()
-
-
 # ======================
 #   HOSTS ACTIONS
 # ======================
@@ -135,28 +107,7 @@ def wrap_view_hosts(config):
 #   SERVER ACTIONS
 # ======================
 
-def wrap_start_server(config):
-    """Start HTTP server"""
-    print(f"\n{Colors.YELLOW}[*] Server start not implemented yet{Colors.NC}")
-    print(f"{Colors.CYAN}Coming soon: Will start HTTP server for lab{Colors.NC}")
 
-
-def wrap_stop_server(config):
-    """Stop HTTP server"""
-    print(f"\n{Colors.YELLOW}[*] Server stop not implemented yet{Colors.NC}")
-    print(f"{Colors.CYAN}Coming soon: Will stop running server{Colors.NC}")
-
-
-def wrap_restart_server(config):
-    """Restart HTTP server"""
-    print(f"\n{Colors.YELLOW}[*] Server restart not implemented yet{Colors.NC}")
-    print(f"{Colors.CYAN}Coming soon: Will restart server with new config{Colors.NC}")
-
-
-def wrap_server_status(config):
-    """Show detailed server status"""
-    print(f"\n{Colors.YELLOW}[*] Server status not implemented yet{Colors.NC}")
-    print(f"{Colors.CYAN}Coming soon: Will show server logs and stats{Colors.NC}")
 
 
 # ======================
