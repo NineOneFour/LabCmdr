@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Scripts directory - downloaded tools
+scripts/server/serve/tools/*
+scripts/server/serve/exploits/*
+scripts/server/serve/payloads/*
+!scripts/server/serve/tools/.gitkeep
+!scripts/server/serve/exploits/.gitkeep
+!scripts/server/serve/payloads/.gitkeep
+
+# Loot directory - don't commit sensitive data
+scripts/server/loot/*
+!scripts/server/loot/.gitkeep
+!scripts/server/loot/creds/.gitkeep
+!scripts/server/loot/hashes/.gitkeep
+!scripts/server/loot/interesting_files/.gitkeep
+!scripts/server/loot/screenshots/.gitkeep
+
+# Logs
+*.log
+
+# Temp files
+*.tmp
+.temp/
