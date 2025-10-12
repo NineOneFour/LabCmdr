@@ -3,8 +3,6 @@ config.py - Updated LAB_CONFIG with runtime section
 Replace the existing LAB_CONFIG in src/config.py with this version
 """
 
-HTB_SEASON = 9
-
 class Colors:
     RED = '\033[0;31m'
     GREEN = '\033[0;32m'

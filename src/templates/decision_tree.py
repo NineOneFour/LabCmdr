@@ -1,4 +1,4 @@
-from ..config import HTB_SEASON
+from ..core.config_manager import get_htb_season
 from datetime import datetime
 
 DECISION_TREE = {
@@ -14,7 +14,7 @@ DECISION_TREE = {
 
     "htb_season": {
         "prompts": [
-            {"key": "season", "type": "int", "default": HTB_SEASON, "prompt": "Season number"},
+            {"key": "season", "type": "int", "default": get_htb_season(), "prompt": "Season number"},
             {"key": "week", "type": "int", "prompt": "Week number (1-13)", "validate": lambda x: 1 <= int(x) <= 13},
             {"key": "machine_name", "prompt": "Machine name"},
             {"key": "ip_address", "type": "ip", "prompt": "Target IP address", "optional": True},

@@ -14,6 +14,7 @@ from datetime import datetime
 
 from ..config import Colors
 from ..core.context import find_lab_root
+from ..core.config_manager import get_network_interface, get_fallback_interfaces, get_default_port
 
 
 def get_server_paths():
@@ -31,16 +32,45 @@ def get_server_paths():
     return serve_dir, loot_dir, log_file
 
 
-def get_tun0_ip():
+def get_interface_ip():
     """
-    Get the IPv4 address of tun0 interface
+    Get the IPv4 address of the configured network interface.
+    Tries primary interface, then fallbacks.
+    
+    Returns:
+        str: IP address or None if not found
+    """
+    # Get primary interface from config
+    primary = get_network_interface()
+    
+    # Try primary interface
+    ip = _try_interface(primary)
+    if ip:
+        return ip
+    
+    # Try fallback interfaces
+    fallbacks = get_fallback_interfaces()
+    for interface in fallbacks:
+        ip = _try_interface(interface)
+        if ip:
+            return ip
+    
+    return None
+
+
+def _try_interface(interface_name):
+    """
+    Try to get IP from a specific interface.
+    
+    Args:
+        interface_name: Name of network interface
     
     Returns:
         str: IP address or None if not found
     """
     try:
         result = subprocess.run(
-            ["ip", "-4", "addr", "show", "tun0"],
+            ["ip", "-4", "addr", "show", interface_name],
             capture_output=True,
             text=True,
             check=True
@@ -246,7 +276,7 @@ def display_commands(ip, port, serve_dir, loot_dir):
     print()
 
 
-def start_server(port=8080):
+def start_server(port=None):
     """
     Start HTTP server for current lab
     
@@ -256,6 +286,9 @@ def start_server(port=8080):
     Returns:
         HTTPServer instance (or None if failed)
     """
+    if port is None:
+        port = get_default_port()
+
     # Get paths from current lab
     serve_dir, loot_dir, log_file = get_server_paths()
     
@@ -281,10 +314,12 @@ def start_server(port=8080):
         f.write(f"Port: {port}\n")
         f.write(f"{'='*60}\n")
     
-    # Get tun0 IP
-    ip = get_tun0_ip()
+    # Get Interface IP
+    ip = get_interface_ip()
     if not ip:
-        print(f"{Colors.RED}[!] Could not find tun0 IP. Is your VPN connected?{Colors.NC}")
+        interface = get_network_interface()
+        print(f"{Colors.RED}[!] Could not find IP on {interface} or fallback interfaces{Colors.NC}")
+        print(f"{Colors.YELLOW}[*] Check your VPN connection or update network.interface in config{Colors.NC}")
         return None
     
     print(f"{Colors.BLUE}╔══════════════════════════════════════════╗{Colors.NC}")

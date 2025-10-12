@@ -15,7 +15,8 @@ from pathlib import Path
 
 from ..config import Colors
 from ..core.context import load_lab_config, save_lab_config, find_lab_root
-from ..core.http_server import start_server, check_port_available, get_tun0_ip
+from ..core.http_server import start_server, check_port_available, get_interface_ip
+from ..core.config_manager import get_default_port
 
 
 # Global state
@@ -24,7 +25,7 @@ _server_thread = None
 _log_file_path = None
 
 
-def start_lab_server(port=8080):
+def start_lab_server(port=None):
     """
     Start HTTP server in background thread.
     Handles port conflicts automatically.
@@ -44,6 +45,8 @@ def start_lab_server(port=8080):
         print(f"{Colors.CYAN}[*] Running on port {status['port']}{Colors.NC}")
         return False
     
+    if port is None:
+        port = get_default_port()
     # Find available port
     original_port = port
     while not check_port_available(port):
@@ -84,7 +87,7 @@ def start_lab_server(port=8080):
         
         # Get server details
         pid = os.getpid()
-        ip = get_tun0_ip()
+        ip = get_interface_ip()
         started_at = datetime.now().isoformat()
         
         # Update config
@@ -180,7 +183,7 @@ def restart_lab_server(port=None):
     # Get current port if not specified
     if port is None:
         status = get_server_status()
-        port = status.get('port', 8080)
+        port = status.get('port') or get_default_port()
     
     print(f"{Colors.CYAN}[*] Restarting server on port {port}...{Colors.NC}\n")
     

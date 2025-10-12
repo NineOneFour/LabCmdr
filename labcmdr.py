@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from src.config import Colors
 from src.core.context import LabNotFoundError
+from src.commands.config import config_cli
 
 
 def main():
@@ -22,32 +23,45 @@ def main():
         epilog="""
 Commands:
   create      Create a new lab environment
-  start       Start lab (scans + server)
-  server      Start HTTP server
-  manage      Interactive configuration management
+  run         Interactive lab control panel
   status      Show lab status
+  config      Manage configuration
   
 Examples:
   labcmdr create              # Interactive lab creation
   labcmdr create /path/to/lab # Create at specific path
-  labcmdr start               # Start current lab (scans + server)
-  labcmdr server              # Start server only
-  labcmdr manage              # Update config interactively
+  labcmdr run                 # Start lab control panel
   labcmdr status              # Show current lab info
+  labcmdr config              # Config management menu
+  labcmdr config show         # Display configuration
+  labcmdr config edit         # Edit config file
         """
     )
     
     parser.add_argument(
         'command',
         nargs='?',
-        choices=['create', 'run', 'status'],  # Simplified
+        choices=['create', 'run', 'status', 'config'],
         help='Command to run'
     )
     
+    # Additional positional args (context-dependent)
     parser.add_argument(
-        'path',
+        'subcommand',
         nargs='?',
-        help='Path for lab creation (only used with create command)'
+        help='Subcommand (e.g., config subcommands: show, edit, get, set, init, reset, path, validate)'
+    )
+    
+    parser.add_argument(
+        'arg1',
+        nargs='?',
+        help='First argument (path for create, key for config get/set)'
+    )
+    
+    parser.add_argument(
+        'arg2',
+        nargs='?',
+        help='Second argument (value for config set)'
     )
     
     parser.add_argument(
@@ -65,23 +79,12 @@ Examples:
     try:
         if args.command == 'create':
             from src.commands.create import create_lab
-            create_lab(args.path)
+            # arg1 is the path for create command
+            create_lab(args.arg1)
 
         elif args.command == 'run':
             from src.commands.run import main_menu
             main_menu()
-                
-        elif args.command == 'start':
-            print(f"{Colors.YELLOW}[*] 'start' command not implemented yet{Colors.NC}")
-            print(f"{Colors.CYAN}Coming soon: Will run initial scans and start server{Colors.NC}")
-        
-        elif args.command == 'server':
-            print(f"{Colors.YELLOW}[*] 'server' command not implemented yet{Colors.NC}")
-            print(f"{Colors.CYAN}Coming soon: Will start HTTP server for current lab{Colors.NC}")
-        
-        elif args.command == 'manage':
-            print(f"{Colors.YELLOW}[*] 'manage' command not implemented yet{Colors.NC}")
-            print(f"{Colors.CYAN}Coming soon: Interactive config management{Colors.NC}")
         
         elif args.command == 'status':
             from src.core.context import find_lab_root, load_lab_config
@@ -105,9 +108,12 @@ Examples:
             
             print()
         
-        elif args.command == 'stop':
-            print(f"{Colors.YELLOW}[*] 'stop' command not implemented yet{Colors.NC}")
-            print(f"{Colors.CYAN}Coming soon: Will stop running server{Colors.NC}")
+        elif args.command == 'config':
+            # Map args to what config_cli expects
+            args.config_command = args.subcommand
+            args.key = args.arg1
+            args.value = args.arg2
+            config_cli(args)
     
     except LabNotFoundError as e:
         print(f"\n{Colors.RED}[!] {e}{Colors.NC}")

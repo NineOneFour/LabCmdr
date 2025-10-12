@@ -1,0 +1,70 @@
+# LabCmdr Global Configuration
+# This file controls default settings for all labs
+# Location: ~/.config/labcmdr/config.yaml
+
+# === CORE PATHS ===
+# Absolute paths recommended to avoid ambiguity
+paths:
+  labs_root: $HOME/Labs              # Root directory where all labs are stored
+  config_dir: $HOME/.config/labcmdr  # Configuration directory (this file's location)
+
+# === NETWORK ===
+# Controls network interface detection for HTTP server
+network:
+  interface: tun0                # Primary network interface to bind server to
+  fallback_interfaces:           # Try these interfaces in order if primary unavailable
+    - tun1
+    - eth0
+  auto_detect: false            # Reserved for future auto-detection feature
+
+# === SERVER ===
+# HTTP server settings for file serving and upload
+server:
+  default_port: 8080            # Default port for HTTP server
+  auto_increment_port: true     # Automatically try next port if default is busy
+  enable_upload: true           # Allow POST requests for file uploads
+  serve_directory: server/serve # Subdirectory in lab for files to serve (relative to lab root)
+  loot_directory: server/loot   # Subdirectory in lab for uploaded files (relative to lab root)
+
+# === SCANNING ===
+# Default nmap scan configurations
+scanning:
+  tool: nmap                                                      # Scanner executable
+  initial_scan_flags: "-sC -sV -oN scans/nmap/initial.txt"      # Quick scan with version detection
+  full_scan_flags: "-p- -sC -sV -oN scans/nmap/full.txt"        # Comprehensive all-port scan
+  udp_scan_flags: "-sU --top-ports 100 -oN scans/nmap/udp.txt"  # UDP scan (requires sudo)
+
+# === TOOLS ===
+# Tool download behavior
+tools:
+  auto_download: false          # Automatically download tools when creating new lab
+  categories:                   # Default tool categories to download (if auto_download enabled)
+    - linux
+    - windows
+    # - ad                       # Uncomment to include Active Directory tools by default
+
+# === PLATFORMS ===
+# Platform-specific settings
+platforms:
+  htb:
+    current_season: 9           # Current Hack The Box season number
+
+# === BEHAVIOR ===
+# User interaction preferences
+behavior:
+  file_overwrite: prompt        # How to handle existing files: prompt | all | none
+  auto_update_hosts: false      # Automatically update /etc/hosts without confirmation
+  confirm_destructive: true     # Require confirmation for destructive operations
+
+# === APPLICATIONS ===
+# External applications to use for various operations
+applications:
+  editor: nano                  # Text editor for opening/editing notes
+  file_manager: xdg-open        # File manager for opening directories
+  terminal: x-terminal-emulator # Terminal emulator (reserved for future use)
+
+# === SYSTEM ===
+# System-level paths and permissions
+system:
+  hosts_file: /etc/hosts        # Path to system hosts file
+  use_sudo_for_hosts: true      # Use sudo for /etc/hosts modifications

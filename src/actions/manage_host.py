@@ -9,9 +9,10 @@ import subprocess
 
 from ..config import Colors
 from ..core.context import load_lab_config
+from ..core.config_manager import get_config_value
 
 
-HOSTS_PATH = "/etc/hosts"
+HOSTS_PATH = get_config_value("system.hosts_file", "/etc/hosts")
 
 
 def update_hosts():

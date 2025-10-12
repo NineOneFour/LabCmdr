@@ -9,9 +9,12 @@ from pathlib import Path
 from ..config import Colors
 from ..templates.decision_tree import DECISION_TREE
 from ..core.copy_files import copy_files
+from ..core.config_manager import get_labs_root
 
 # Base path for all labs
-BASE_PATH = Path.home() / "Labs"
+def get_base_path():
+    """Get labs root from config"""
+    return Path(get_labs_root())
 
 
 
@@ -147,7 +150,7 @@ def build_training_path(ctx: dict) -> Path:
     """Build path for training platform labs"""
     platform = ctx.get("custom_platform") if ctx.get("platform") == "custom" else ctx.get("platform")
     machine = ctx.get("machine_name", "unknown")
-    return BASE_PATH / platform / machine
+    return get_base_path() / platform / machine
 
 def build_conference_path(ctx: dict) -> Path:
     """Build path for conference CTF labs"""
@@ -156,13 +159,13 @@ def build_conference_path(ctx: dict) -> Path:
     
     if conf == "bsides":
         location = clean_location(ctx.get("location", "Unknown"))
-        base = BASE_PATH / "BSides" / location
+        base = get_base_path() / "BSides" / location
     elif conf == "defcon":
         village = clean_name(ctx.get("village", ""))
-        base = BASE_PATH / "DefCon" / str(year) / village if village else BASE_PATH / "DefCon" / str(year)
+        base = get_base_path() / "DefCon" / str(year) / village if village else get_base_path() / "DefCon" / str(year)
     else:
         conf_name = ctx.get("conference_name", "Conference")
-        base = BASE_PATH / conf_name / str(year)
+        base = get_base_path() / conf_name / str(year)
     
     # Add challenge name if provided
     challenge = ctx.get("challenge_name")
@@ -176,8 +179,8 @@ def build_custom_path(ctx: dict) -> Path:
     category = ctx.get("category")
     
     if category:
-        return BASE_PATH / category / lab_name
-    return BASE_PATH / lab_name
+        return get_base_path() / category / lab_name
+    return get_base_path() / lab_name
 
 def build_path(ctx: dict) -> Path:
     """Generate final lab path based on context"""
@@ -186,7 +189,7 @@ def build_path(ctx: dict) -> Path:
     # HTB Season has its own template
     if root == "htb_season" and "path_template" in DECISION_TREE[root]:
         path_str = DECISION_TREE[root]["path_template"].format(**ctx)
-        return BASE_PATH / path_str
+        return get_base_path() / path_str
     
     # Use custom path builder if specified
     node = DECISION_TREE.get(root)
@@ -196,7 +199,7 @@ def build_path(ctx: dict) -> Path:
             return builder_func(ctx)
     
     # Fallback
-    return BASE_PATH / "Uncategorized" / ctx.get("lab_name", f"Lab_{datetime.now().strftime('%Y%m%d')}")
+    return get_base_path() / "Uncategorized" / ctx.get("lab_name", f"Lab_{datetime.now().strftime('%Y%m%d')}")
 
 # -------- Main Traversal Function ----------
 
