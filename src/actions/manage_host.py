@@ -15,6 +15,17 @@ from ..core.config_manager import get_config_value
 HOSTS_PATH = get_config_value("system.hosts_file", "/etc/hosts")
 
 
+def validate_fqdn(fqdn):
+    """Validate FQDN to prevent shell injection."""
+    import re
+    # Only allow: letters, numbers, dots, hyphens
+    if not re.match(r'^[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]$', fqdn):
+        raise ValueError(f"Invalid FQDN format: {fqdn}")
+    if '..' in fqdn or fqdn.startswith('.') or fqdn.endswith('.'):
+        raise ValueError(f"Invalid FQDN format: {fqdn}")
+    return fqdn
+
+
 def update_hosts():
     """
     Update /etc/hosts file with lab entries.
@@ -89,6 +100,7 @@ def update_hosts():
     
     new_block = [f"\n{start_tag}\n"]
     for fqdn in fqdns:
+        validate_fqdn(fqdn)
         new_block.append(f"{ip}\t{fqdn}\n")
     new_block.append(f"{end_tag}\n")
     
