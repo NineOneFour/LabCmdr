@@ -115,7 +115,7 @@ def edit_field(section, key, config=None):
         return False
 
 
-def quick_ip_update():
+def quick_ip_update(config=None):
     """
     Quick update for IP address.
     

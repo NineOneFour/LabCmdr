@@ -155,6 +155,8 @@ def run_menu(menu, header_func=None, config=None, depth=0):
         
         # Get menu components
         title = menu.get("title", "Menu")
+        if callable(title):
+            title = title(config)
         items = menu.get("items", {})
         context_block = menu.get("context")
         

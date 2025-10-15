@@ -45,7 +45,7 @@ Examples:
     parser.add_argument(
         'command',
         nargs='?',
-        choices=['create', 'run', 'status', 'config', 'help'],
+        choices=['create', 'run', 'start',  'status', 'config', 'help'],
         help='Command to run'
     )
     
@@ -97,7 +97,7 @@ Examples:
             from src.commands.create import create_lab
             create_lab(args.arg1)
 
-        elif args.command == 'run':
+        elif args.command == 'run' or args.command == 'start':
             from src.commands.run import main_menu
             main_menu()
         

@@ -151,3 +151,12 @@ def has_credentials(config):
     username = config['credentials'].get('username', '')
     password = config['credentials'].get('password', '')
     return bool(username or password)
+
+def get_main_menu_title(config):
+    """Get dynamic title for main menu"""
+    lab_name = (config['metadata'].get('name') or 
+                config['metadata'].get('machine_name') or 
+                config['metadata'].get('lab_name') or 
+                config['metadata'].get('challenge_name') or 
+                'Main Menu')
+    return lab_name

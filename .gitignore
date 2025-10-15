@@ -62,3 +62,4 @@ scripts/server/loot/*
 # Temp files
 *.tmp
 .temp/
+junkdrawer/

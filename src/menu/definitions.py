@@ -13,7 +13,8 @@ from .context import (
     get_username,
     get_password,
     has_credentials,
-    get_attacker_ip
+    get_attacker_ip,
+    get_main_menu_title
 )
 from .wrappers import (
     wrap_start_server,
@@ -44,6 +45,7 @@ from ..actions.update_lab import (
     add_fqdn,
     remove_fqdn,
     list_fqdns,
+    edit_field,
 )
 
 from ..actions.manage_host import (
@@ -184,11 +186,11 @@ METADATA_EDITOR_MENU = {
     },
     "items": {
         "Fields": {
-            "1": ("Edit Name", wrap_edit_metadata_field),
-            "2": ("Edit Platform", wrap_edit_metadata_field),
-            "3": ("Edit Season", wrap_edit_metadata_field),
-            "4": ("Edit Week", wrap_edit_metadata_field),
-            "5": ("Edit Year", wrap_edit_metadata_field),
+            "1": ("Edit Name", lambda c: edit_field("metadata", "name")),
+            "2": ("Edit Platform", lambda c: edit_field("metadata", "platform")),
+            "3": ("Edit Season", lambda c: edit_field("metadata", "season")),
+            "4": ("Edit Week", lambda c: edit_field("metadata", "week")),
+            "5": ("Edit Year", lambda c: edit_field("metadata", "year")),
         },
 
     }
@@ -224,6 +226,16 @@ NETWORK_EDITOR_MENU = {
     }
 }
 
+FQDN_MANAGEMENT_MENU = {
+    "title": "FQDN Management",
+    "items": {
+        "Actions": {
+            "1": ("Add FQDN", add_fqdn),
+            "2": ("Remove FQDN", remove_fqdn),
+            "3": ("List FQDNs", list_fqdns),
+        }
+    }
+}
 
 # ======================
 #   CREDENTIALS EDITOR SUBMENU
@@ -256,10 +268,8 @@ CONFIG_MENU = {
         ]
     },
     "items": {
-        "Quick Actions": {
+        "Editors": {
             "1": ("Update Target IP", quick_ip_update),
-        },
-        "Section Editors": {
             "2": ("Edit Metadata", METADATA_EDITOR_MENU),
             "3": ("Edit Network Settings", NETWORK_EDITOR_MENU),
             "4": ("Edit Credentials", CREDENTIALS_EDITOR_MENU),
@@ -321,18 +331,19 @@ LAB_INFO_MENU = {
 # ======================
 
 MAIN_MENU = {
-    "title": "Main Menu",
+    "title": get_main_menu_title,  # Dynamic title based on lab name
     "context": None,  # Will be populated dynamically
     "items": {
         "Actions": {
             "1": ("Start/Stop Server", SERVER_MENU),
             "2": ("Run Scans", SCANNING_MENU),
             "3": ("Update Target IP", quick_ip_update),
+            "4": ("Manage FQDNs", FQDN_MANAGEMENT_MENU),
         },
         "Management": {
-            "4": ("Configure Lab", CONFIG_MENU),
-            "5": ("Manage /etc/hosts", HOSTS_MANAGEMENT_MENU),
-            "6": ("Download Tools", TOOLS_MENU),
+            "5": ("Configure Lab", CONFIG_MENU),
+            "6": ("Manage /etc/hosts", HOSTS_MANAGEMENT_MENU),
+            "7": ("Download Tools", TOOLS_MENU),
         },
         "Information": {
             "7": ("Lab Info & Files", LAB_INFO_MENU),
