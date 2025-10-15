@@ -37,6 +37,9 @@ from .wrappers import (
     wrap_edit_network_field,
     wrap_edit_credentials_field,
     wrap_view_server_log,
+    wrap_start_stop_server,
+    wrap_quick_commands,
+    wrap_change_port,
 )
 
 from ..actions.update_lab import (
@@ -103,26 +106,7 @@ def build_main_menu_context(config):
 #   SERVER SUBMENU
 # ======================
 
-SERVER_MENU = {
-    "title": "Server Management",
-    "context": {
-        "title": "",
-        "fields": [
-            ("Status", get_server_status),
-        ]
-    },
-    "items": {
-        "Actions": {
-            "1": ("Start Server", wrap_start_server),
-            "2": ("Stop Server", wrap_stop_server),
-            "3": ("Restart Server", wrap_restart_server),
-        },
-        "Info": {
-            "4": ("View Server Status", wrap_server_status),
-            "5": ("View Server Log", wrap_view_server_log),  # NEW OPTION
-        }
-    }
-}
+
 
 
 # ======================
@@ -193,6 +177,31 @@ METADATA_EDITOR_MENU = {
             "5": ("Edit Year", lambda c: edit_field("metadata", "year")),
         },
 
+    }
+}
+
+# ======================
+#   SERVER MANAGEMENT SUBMENU
+# ======================
+
+SERVER_MANAGEMENT_MENU = {
+    "title": "Server Management",
+    "context": {
+        "title": "",
+        "fields": [
+            ("Server", get_server_status),
+        ]
+    },
+    "items": {
+        "Server": {
+            "1": ("Start/Stop Server", wrap_start_stop_server),
+            "2": ("Restart Server", wrap_restart_server),
+            "3": ("Change Port", wrap_change_port),
+        },
+        "Utility": {
+            "4": ("View Logs", wrap_view_server_log),
+            "5": ("Download Tools", TOOLS_MENU),
+        }
     }
 }
 
@@ -335,18 +344,19 @@ MAIN_MENU = {
     "context": None,  # Will be populated dynamically
     "items": {
         "Actions": {
-            "1": ("Start/Stop Server", SERVER_MENU),
+            "1": ("Start/Stop Server", wrap_start_stop_server),
             "2": ("Run Scans", SCANNING_MENU),
             "3": ("Update Target IP", quick_ip_update),
             "4": ("Manage FQDNs", FQDN_MANAGEMENT_MENU),
         },
         "Management": {
-            "5": ("Configure Lab", CONFIG_MENU),
-            "6": ("Manage /etc/hosts", HOSTS_MANAGEMENT_MENU),
-            "7": ("Download Tools", TOOLS_MENU),
+            "5": ("Manage Server", SERVER_MANAGEMENT_MENU),  # This will be updated later to SERVER_MANAGEMENT_MENU
+            "6": ("Configure Lab", CONFIG_MENU),
+            "7": ("Manage /etc/hosts", HOSTS_MANAGEMENT_MENU),
         },
         "Information": {
-            "7": ("Lab Info & Files", LAB_INFO_MENU),
+            "8": ("Quick Commands", wrap_quick_commands),
+            "9": ("Lab Info & Files", LAB_INFO_MENU),
         }
     }
 }
