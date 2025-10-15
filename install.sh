@@ -126,4 +126,4 @@ else
     exit 1
 fi
 
-echo -e "${GREEN}Ready to hack! 🚀${NC}"
+echo -e "${GREEN}Get to Hacking! ${NC}"
