@@ -263,7 +263,7 @@ CONFIG_MENU = {
             "4": ("Edit Credentials", CREDENTIALS_EDITOR_MENU),
         },
         "View": {
-            "5": ("View Full Config", wrap_view_config),
+            "5": ("View Full Config", view_config),
         },
 
     }
@@ -325,7 +325,7 @@ MAIN_MENU = {
         "Actions": {
             "1": ("Start/Stop Server", SERVER_MENU),
             "2": ("Run Scans", SCANNING_MENU),
-            "3": ("Update Target IP", wrap_quick_ip_update),
+            "3": ("Update Target IP", quick_ip_update),
         },
         "Management": {
             "4": ("Configure Lab", CONFIG_MENU),

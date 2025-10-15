@@ -14,34 +14,38 @@ sys.path.insert(0, str(Path(__file__).parent))
 from src.config import Colors
 from src.core.context import LabNotFoundError
 from src.commands.config import config_cli
+from src.commands.help import show_help  # NEW IMPORT
 
 
 def main():
+    # Check for help flag BEFORE argparse (to show custom help)
+    if len(sys.argv) > 1 and sys.argv[1] in ['help', '--help', '-h']:
+        show_help()
+        sys.exit(0)
+    
     parser = argparse.ArgumentParser(
         description='Lab environment management tool for CTF/Pentesting',
         formatter_class=argparse.RawDescriptionHelpFormatter,
+        add_help=False,  # Disable default help (we have custom)
         epilog="""
 Commands:
   create      Create a new lab environment
   run         Interactive lab control panel
   status      Show lab status
   config      Manage configuration
+  help        Show detailed help
   
 Examples:
   labcmdr create              # Interactive lab creation
-  labcmdr create /path/to/lab # Create at specific path
   labcmdr run                 # Start lab control panel
-  labcmdr status              # Show current lab info
-  labcmdr config              # Config management menu
-  labcmdr config show         # Display configuration
-  labcmdr config edit         # Edit config file
+  labcmdr help                # Show detailed help
         """
     )
     
     parser.add_argument(
         'command',
         nargs='?',
-        choices=['create', 'run', 'status', 'config'],
+        choices=['create', 'run', 'status', 'config', 'help'],
         help='Command to run'
     )
     
@@ -49,19 +53,19 @@ Examples:
     parser.add_argument(
         'subcommand',
         nargs='?',
-        help='Subcommand (e.g., config subcommands: show, edit, get, set, init, reset, path, validate)'
+        help='Subcommand (e.g., config subcommands)'
     )
     
     parser.add_argument(
         'arg1',
         nargs='?',
-        help='First argument (path for create, key for config get/set)'
+        help='First argument'
     )
     
     parser.add_argument(
         'arg2',
         nargs='?',
-        help='Second argument (value for config set)'
+        help='Second argument'
     )
     
     parser.add_argument(
@@ -70,7 +74,19 @@ Examples:
         version='labcmdr 1.0.0'
     )
     
+    # Custom help flag
+    parser.add_argument(
+        '-h', '--help',
+        action='store_true',
+        help='Show help message'
+    )
+    
     args = parser.parse_args()
+    
+    # Handle help command
+    if args.command == 'help' or args.help:
+        show_help()
+        sys.exit(0)
     
     # Default to create if no command given
     if not args.command:
@@ -79,7 +95,6 @@ Examples:
     try:
         if args.command == 'create':
             from src.commands.create import create_lab
-            # arg1 is the path for create command
             create_lab(args.arg1)
 
         elif args.command == 'run':
