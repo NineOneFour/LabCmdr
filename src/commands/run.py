@@ -74,7 +74,7 @@ def main_menu():
         # Sanity check: does labcmdr directory exist?
         from pathlib import Path
         labcmdr_dir = lab_root / "labcmdr"
-        config_file = labcmdr_dir / "labconfig.json"
+        config_file = labcmdr_dir / "labconfig.yaml"
         
         if not labcmdr_dir.exists() or not config_file.exists():
             print(f"\n{Colors.YELLOW}[!] Warning: This doesn't look like a complete lab directory{Colors.NC}")
@@ -83,7 +83,7 @@ def main_menu():
             if not labcmdr_dir.exists():
                 print(f"\n{Colors.RED}Missing: labcmdr/ directory{Colors.NC}")
             elif not config_file.exists():
-                print(f"\n{Colors.RED}Missing: labcmdr/labconfig.json{Colors.NC}")
+                print(f"\n{Colors.RED}Missing: labcmdr/labconfig.yaml{Colors.NC}")
             
             print(f"\n{Colors.CYAN}This directory was likely not created with 'labcmdr create'.{Colors.NC}")
             print(f"{Colors.YELLOW}Would you like to initialize it as a lab? (y/n):{Colors.NC} ", end="")
