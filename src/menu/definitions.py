@@ -57,6 +57,8 @@ from ..actions.manage_host import (
     view_hosts_entries,
 )
 
+from ..actions.server import is_server_running
+
 
 def build_main_menu_context(config):
     """

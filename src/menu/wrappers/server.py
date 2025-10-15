@@ -222,6 +222,7 @@ def wrap_start_stop_server(config):
     If stopped, start with defaults. If running, stop immediately.
     """
     
+    print(f"\n{Colors.BLUE}╔══════════════════════════════════════════╗{Colors.NC}")    
     if is_server_running():
         # Server is running - stop it
         status = get_server_status()
@@ -236,8 +237,9 @@ def wrap_start_stop_server(config):
         else:
             print(f"{Colors.RED}[!] Failed to stop server{Colors.NC}")
     else:
-        # Server is stopped - start it
-        port = get_default_port()
+        # Server is stopped - get port from lab config first
+        lab_config = load_lab_config()
+        port = lab_config.get('runtime', {}).get('server_port') or get_default_port()
         
         print(f"\n{Colors.CYAN}[*] Starting server on port {port}...{Colors.NC}")
         
@@ -247,7 +249,6 @@ def wrap_start_stop_server(config):
             print(f"{Colors.GREEN}[+] Server started successfully{Colors.NC}")
         else:
             print(f"{Colors.RED}[!] Failed to start server{Colors.NC}")
-
 
 def wrap_quick_commands(config):
     """
