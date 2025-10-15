@@ -12,7 +12,8 @@ from .context import (
     get_fqdn_count,
     get_username,
     get_password,
-    has_credentials
+    has_credentials,
+    get_attacker_ip
 )
 from .wrappers import (
     wrap_start_server,
@@ -69,6 +70,7 @@ def build_main_menu_context(config):
     contexts.append({
         "title": "Status:",
         "fields": [
+            ("Attacker",get_attacker_ip),
             ("Target", get_target_ip),
             ("Server", get_server_status),
         ]

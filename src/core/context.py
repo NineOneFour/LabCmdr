@@ -136,3 +136,12 @@ def get_lab_info():
         "type": config['metadata'].get('type', 'Unknown'),
         "created": config['metadata'].get('created'),
     }
+
+def get_attacker_ip(config):
+    """Get attacker IP from interface with color"""
+    ip = get_interface_ip()
+    
+    if ip:
+        return ip, Colors.GREEN
+    else:
+        return "Not connected", Colors.RED

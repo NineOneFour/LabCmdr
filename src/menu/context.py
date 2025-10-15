@@ -4,7 +4,17 @@ Handles dynamic context blocks and headers for menu system
 """
 
 from ..config import Colors
+from ..core.http_server import get_interface_ip
 
+
+def get_attacker_ip(config):
+    """Get attacker IP from interface with color"""
+    ip = get_interface_ip()
+    
+    if ip:
+        return ip, Colors.GREEN
+    else:
+        return "VPN Not connected", Colors.RED
 
 def render_context(context_block, config):
     """
