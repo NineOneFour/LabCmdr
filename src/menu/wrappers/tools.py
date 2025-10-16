@@ -17,56 +17,17 @@ from ...actions.download_ad import (
 from ...config import Colors
 
 
-def wrap_download_linux_tools(config):
-    """Download Linux tools"""
-    print(f"\n{Colors.CYAN}[*] Downloading Linux enumeration tools...{Colors.NC}")
-    
-    # Ask if user wants to force re-download
-    print(f"\n{Colors.YELLOW}Re-download existing files? (y/n):{Colors.NC} ", end="")
-    force = input().strip().lower() == 'y'
-    
-    try:
-        download_linux_tools(force=force)
-    except Exception as e:
-        print(f"\n{Colors.RED}[!] Error downloading Linux tools: {e}{Colors.NC}")
-
-
-def wrap_download_windows_tools(config):
-    """Download Windows tools"""
-    print(f"\n{Colors.CYAN}[*] Downloading Windows enumeration tools...{Colors.NC}")
-    
-    # Ask if user wants to force re-download
-    print(f"\n{Colors.YELLOW}Re-download existing files? (y/n):{Colors.NC} ", end="")
-    force = input().strip().lower() == 'y'
-    
-    try:
-        download_windows_tools(force=force)
-    except Exception as e:
-        print(f"\n{Colors.RED}[!] Error downloading Windows tools: {e}{Colors.NC}")
-
-
-def wrap_download_ad_tools(config):
-    """Download AD tools"""
-    print(f"\n{Colors.CYAN}[*] Downloading Active Directory enumeration tools...{Colors.NC}")
-    
-    # Ask if user wants to force re-download
-    print(f"\n{Colors.YELLOW}Re-download existing files? (y/n):{Colors.NC} ", end="")
-    force = input().strip().lower() == 'y'
-    
-    try:
-        download_ad_tools(force=force)
-    except Exception as e:
-        print(f"\n{Colors.RED}[!] Error downloading AD tools: {e}{Colors.NC}")
-
-
 def wrap_download_all_tools(config):
     """Download all tools"""
     print(f"\n{Colors.CYAN}[*] Downloading ALL enumeration tools...{Colors.NC}")
     print(f"{Colors.YELLOW}[*] This will download Linux, Windows, and AD tools{Colors.NC}\n")
     
     # Ask if user wants to force re-download
-    print(f"{Colors.YELLOW}Re-download existing files? (y/n):{Colors.NC} ", end="")
-    force = input().strip().lower() == 'y'
+
+
+
+    print(f"{Colors.YELLOW}Overwrite existing files? (y/n):{Colors.NC} ", end="")
+    force = input().strip().lower() == 'ye'
     
     try:
         print(f"\n{Colors.BLUE}[1/3] Linux Tools{Colors.NC}")
@@ -100,6 +61,19 @@ def wrap_list_tools(config):
         
     except Exception as e:
         print(f"\n{Colors.RED}[!] Error listing tools: {e}{Colors.NC}")
+
+def wrap_remove_all_tools(config):
+    """Remove all tools"""
+    print(f"\n{Colors.RED}[!] WARNING: This will remove ALL tools{Colors.NC}")
+    print(f"{Colors.YELLOW}Continue? (y/n):{Colors.NC} ", end="")
+    if input().strip().lower() == 'y':
+        total = 0
+        total += remove_linux_tools()
+        total += remove_windows_tools()
+        total += remove_ad_tools()
+        print(f"\n{Colors.GREEN}[+] Removed {total} total tools{Colors.NC}")
+    else:
+        print(f"{Colors.YELLOW}[*] Cancelled{Colors.NC}")
 
 
 def wrap_remove_tools_menu(config):
@@ -138,10 +112,8 @@ def wrap_remove_tools_menu(config):
 
 
 __all__ = [
-    "wrap_download_linux_tools",
-    "wrap_download_windows_tools",
-    "wrap_download_ad_tools",
     "wrap_download_all_tools",
     "wrap_list_tools",
     "wrap_remove_tools_menu",
+    "wrap_remove_all_tools",
 ]

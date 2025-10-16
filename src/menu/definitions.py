@@ -17,17 +17,12 @@ from .context import (
     get_main_menu_title
 )
 from .wrappers import (
-    wrap_start_server,
-    wrap_stop_server,
     wrap_restart_server,
-    wrap_server_status,
     wrap_run_initial_scan,
     wrap_run_full_scan,
     wrap_run_udp_scan,
     wrap_view_scan_results,
-    wrap_download_linux_tools,
-    wrap_download_windows_tools,
-    wrap_download_ad_tools,
+    wrap_remove_all_tools,
     wrap_download_all_tools,
     wrap_list_tools,
     wrap_open_notes,
@@ -56,6 +51,12 @@ from ..actions.manage_host import (
     remove_from_hosts,
     view_hosts_entries,
 )
+
+from ..actions import download_lin
+from ..actions import download_win
+from ..actions import download_ad
+
+
 
 from ..actions.server import is_server_running
 
@@ -144,9 +145,9 @@ TOOLS_MENU = {
     "title": "Download Tools",
     "items": {
         "Tool Categories": {
-            "1": ("Linux Tools (LinPEAS, pspy, etc.)", wrap_download_linux_tools),
-            "2": ("Windows Tools (WinPEAS, Mimikatz, etc.)", wrap_download_windows_tools),
-            "3": ("AD Tools (BloodHound, Rubeus, etc.)", wrap_download_ad_tools),
+            "1": ("Linux Tools (LinPEAS, pspy, etc.)", download_lin.download_linux_tools),
+            "2": ("Windows Tools (WinPEAS, Mimikatz, etc.)", download_win.download_windows_tools),
+            "3": ("AD Tools (BloodHound, Rubeus, etc.)", download_ad.download_ad_tools),
             "4": ("Download All", wrap_download_all_tools),
         },
         "Info": {
@@ -155,6 +156,18 @@ TOOLS_MENU = {
 
     }
 }
+
+REMOVE_TOOLS_MENU = {
+    "title": "Remove Tools",
+    "items": {
+        "Tool Categories": {
+            "1": ("Linux Tools", download_lin.remove_linux_tools),
+            "2": ("Windows Tools", download_win.remove_windows_tools),
+            "3": ("AD Tools", download_ad.remove_ad_tools),
+            "4": ("Remove All Tools", wrap_remove_all_tools),
+        },
+    }
+} 
 
 
 # ======================

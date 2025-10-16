@@ -1,18 +1,21 @@
-#!/usr/bin/env python3
-"""
-download_lin.py - Linux enumeration tools downloader
-Downloads and manages Linux-specific enumeration tools
-"""
-
 import os
 import urllib.request
 from pathlib import Path
-
 from ..config import Colors
 from ..core.context import find_lab_root
 
+AD_TOOLS = {
+    "SharpHound.exe": "https://github.com/BloodHoundAD/BloodHound/raw/master/Collectors/SharpHound.exe",
+    "SharpHound.ps1": "https://github.com/BloodHoundAD/BloodHound/raw/master/Collectors/SharpHound.ps1",
+    "Rubeus.exe": "https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/raw/master/Rubeus.exe",
+    "Certify.exe": "https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/raw/master/Certify.exe",
+    "Seatbelt.exe": "https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/raw/master/Seatbelt.exe",
+    "SharpUp.exe": "https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/raw/master/SharpUp.exe",
+    "PowerView.ps1": "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1",
+    "Invoke-Mimikatz.ps1": "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Invoke-Mimikatz.ps1",
+    "ADModule.dll": "https://github.com/samratashok/ADModule/raw/master/Microsoft.ActiveDirectory.Management.dll",
+}
 
-# Linux tools dictionary
 LINUX_TOOLS = {
     "linpeas.sh": "https://github.com/peass-ng/PEASS-ng/releases/latest/download/linpeas.sh",
     "pspy64": "https://github.com/DominicBreuker/pspy/releases/latest/download/pspy64",
@@ -20,6 +23,16 @@ LINUX_TOOLS = {
     "linenum.sh": "https://raw.githubusercontent.com/rebootuser/LinEnum/master/LinEnum.sh",
     "lse.sh": "https://github.com/diego-treitos/linux-smart-enumeration/releases/latest/download/lse.sh",
 }
+
+WINDOWS_TOOLS = {
+    "winpeas64.exe": "https://github.com/peass-ng/PEASS-ng/releases/latest/download/winPEASx64.exe",
+    "winpeas32.exe": "https://github.com/peass-ng/PEASS-ng/releases/latest/download/winPEASx86.exe",
+    "winpeasany.exe": "https://github.com/peass-ng/PEASS-ng/releases/latest/download/winPEASany.exe",
+    "mimikatz64.exe": "https://github.com/gentilkiwi/mimikatz/releases/latest/download/mimikatz_trunk.zip",
+    "nc64.exe": "https://github.com/int0x33/nc.exe/raw/master/nc64.exe",
+    "nc32.exe": "https://github.com/int0x33/nc.exe/raw/master/nc.exe",
+}
+
 
 
 def download_file(url, destination):
@@ -36,17 +49,16 @@ def download_file(url, destination):
     try:
         print(f"{Colors.YELLOW}[*] Downloading {os.path.basename(destination)}...{Colors.NC}")
         urllib.request.urlretrieve(url, destination)
-        os.chmod(destination, 0o755)  # Make executable
         print(f"{Colors.GREEN}[+] {os.path.basename(destination)} downloaded successfully{Colors.NC}")
         return True
     except Exception as e:
         print(f"{Colors.RED}[!] Failed to download {os.path.basename(destination)}: {e}{Colors.NC}")
         return False
-
-
-def download_linux_tools(force=False):
+    
+def download_tools(toolset, force=False):
     """
-    Download all Linux enumeration tools to current lab's tools directory.
+    Download all Active Directory enumeration tools to current lab's tools directory.
+    These tools are meant to be transferred to and run on target Windows machines.
     
     Args:
         force: If True, re-download even if files exist
@@ -54,6 +66,23 @@ def download_linux_tools(force=False):
     Returns:
         list: Paths to downloaded tools
     """
+
+    if toolset == "windows":
+        tools_dict = WINDOWS_TOOLS
+        tool_type = "Available Windows Tools"
+    elif toolset == "linux":
+        tools_dict = LINUX_TOOLS
+        tool_type = "Avalable Linux Tools"
+    elif toolset == "ad":
+        tools_dict = AD_TOOLS
+        tool_type = "Available AD Tools"
+    elif toolset == "all":
+        tools_dict = {**WINDOWS_TOOLS, **LINUX_TOOLS, **AD_TOOLS}
+        tool_type = "All Available Tools"
+    else:
+        print(f"{Colors.RED}[!] Unknown toolset: {toolset}{Colors.NC}")
+        return []
+
     lab_root = find_lab_root()
     tools_dir = lab_root / "server" / "serve" / "tools"
     
@@ -61,14 +90,18 @@ def download_linux_tools(force=False):
     tools_dir.mkdir(parents=True, exist_ok=True)
     
     print(f"\n{Colors.BLUE}╔══════════════════════════════════════════╗{Colors.NC}")
-    print(f"{Colors.BLUE}║       Downloading Linux Tools            ║{Colors.NC}")
+
+    print(f"{Colors.BLUE}║       Downloading {tool_type} Tools               ║{Colors.NC}")
     print(f"{Colors.BLUE}╚══════════════════════════════════════════╝{Colors.NC}\n")
+    
+    print(f"{Colors.CYAN}[*] These tools run ON target Windows machines{Colors.NC}")
+    print(f"{Colors.CYAN}[*] BloodHound GUI should be installed on your attacking machine{Colors.NC}\n")
     
     downloaded = []
     skipped = []
     failed = []
     
-    for filename, url in LINUX_TOOLS.items():
+    for filename, url in tools_dict.items():
         dest = tools_dir / filename
         
         # Check if file exists and skip if not forcing
@@ -103,29 +136,41 @@ def download_linux_tools(force=False):
         for name in failed:
             print(f"  • {name}")
     
-    print(f"\n{Colors.GREEN}[+] Linux tools preparation complete{Colors.NC}")
-    print(f"{Colors.CYAN}Tools location: {tools_dir}{Colors.NC}\n")
-    
     return downloaded
 
-
-def list_linux_tools():
+def list_tools(toolset):
     """
-    List all available Linux tools and their download status.
+    List all available AD tools and their download status.
     
     Returns:
         dict: Tool status information
     """
     lab_root = find_lab_root()
     tools_dir = lab_root / "server" / "serve" / "tools"
+
+    if toolset == "windows":
+        tools_dict = WINDOWS_TOOLS
+        tool_type = "Available Windows Tools"
+    elif toolset == "linux":
+        tools_dict = LINUX_TOOLS
+        tool_type = "Avalable Linux Tools"
+    elif toolset == "ad":
+        tools_dict = AD_TOOLS
+        tool_type = "Available AD Tools"
+    elif toolset == "all":
+        tools_dict = {**WINDOWS_TOOLS, **LINUX_TOOLS, **AD_TOOLS}
+        tool_type = "All Available Tools"
+    else:
+        print(f"{Colors.RED}[!] Unknown toolset: {toolset}{Colors.NC}")
+        return []
     
     print(f"\n{Colors.CYAN}╔══════════════════════════════════════════╗{Colors.NC}")
-    print(f"{Colors.CYAN}║         Available Linux Tools            ║{Colors.NC}")
+    print(f"{Colors.CYAN}║         {tool_type}               ║{Colors.NC}")
     print(f"{Colors.CYAN}╚══════════════════════════════════════════╝{Colors.NC}\n")
     
     status = {}
     
-    for filename, url in LINUX_TOOLS.items():
+    for filename,url in tools_dict:
         dest = tools_dir / filename
         exists = dest.exists()
         
@@ -139,26 +184,45 @@ def list_linux_tools():
         if exists:
             size = dest.stat().st_size
             size_str = f"{size / 1024:.1f} KB" if size < 1024 * 1024 else f"{size / (1024 * 1024):.1f} MB"
-            print(f"  {Colors.GREEN}✓{Colors.NC} {filename:<20} ({size_str})")
+            print(f"  {Colors.GREEN}✓{Colors.NC} {filename:<25} ({size_str})")
         else:
-            print(f"  {Colors.RED}✗{Colors.NC} {filename:<20} (not downloaded)")
+            print(f"  {Colors.RED}✗{Colors.NC} {filename:<25}")
     
-    print(f"\n{Colors.CYAN}Tools directory: {tools_dir}{Colors.NC}\n")
+    print()
+    print(f"{Colors.CYAN}Tools directory: {tools_dir}{Colors.NC}\n")
     
     return status
 
 
-def remove_linux_tools():
+
+def remove_tools(toolset):
     """
-    Remove all downloaded Linux tools.
+    Remove all downloaded AD tools.
     
     Returns:
         int: Number of tools removed
     """
+
+    if toolset == "windows":
+        tools_dict = WINDOWS_TOOLS
+        tool_type = "Windows"
+    elif toolset == "linux":
+        tools_dict = LINUX_TOOLS
+        tool_type = "Linux"
+    elif toolset == "ad":
+        tools_dict = AD_TOOLS
+        tool_type = "AD"
+    elif toolset == "all":
+        tools_dict = {**WINDOWS_TOOLS, **LINUX_TOOLS, **AD_TOOLS}
+        tool_type = "all"
+    else:
+        print(f"{Colors.RED}[!] Unknown toolset: {toolset}{Colors.NC}")
+        return []
+
     lab_root = find_lab_root()
     tools_dir = lab_root / "server" / "serve" / "tools"
     
-    print(f"\n{Colors.YELLOW}[!] This will remove all Linux tools{Colors.NC}")
+    print(f"\n{Colors.YELLOW}[!] This will remove {tool_type} downloaded tools{Colors.NC}")
     print(f"{Colors.YELLOW}Continue? (y/n):{Colors.NC} ", end="")
     
     if input().strip().lower() != 'y':
@@ -167,7 +231,7 @@ def remove_linux_tools():
     
     removed = 0
     
-    for filename in LINUX_TOOLS.keys():
+    for filename in tools_dict.keys():
         dest = tools_dir / filename
         if dest.exists():
             try:
@@ -178,8 +242,9 @@ def remove_linux_tools():
                 print(f"{Colors.RED}[!] Failed to remove {filename}: {e}{Colors.NC}")
     
     if removed > 0:
-        print(f"\n{Colors.GREEN}[+] Removed {removed} Linux tools{Colors.NC}")
+        print(f"\n{Colors.GREEN}[+] Removed {removed} tools{Colors.NC}")
     else:
-        print(f"\n{Colors.YELLOW}[*] No Linux tools found to remove{Colors.NC}")
+        print(f"\n{Colors.YELLOW}[*] No tools found to remove{Colors.NC}")
     
     return removed
+
