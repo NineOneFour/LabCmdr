@@ -52,9 +52,7 @@ from ..actions.manage_host import (
     view_hosts_entries,
 )
 
-from ..actions import download_lin
-from ..actions import download_win
-from ..actions import download_ad
+from ..actions import tool_management
 
 
 
@@ -145,10 +143,10 @@ TOOLS_MENU = {
     "title": "Download Tools",
     "items": {
         "Tool Categories": {
-            "1": ("Linux Tools (LinPEAS, pspy, etc.)", download_lin.download_linux_tools),
-            "2": ("Windows Tools (WinPEAS, Mimikatz, etc.)", download_win.download_windows_tools),
-            "3": ("AD Tools (BloodHound, Rubeus, etc.)", download_ad.download_ad_tools),
-            "4": ("Download All", wrap_download_all_tools),
+            "1": ("Linux Tools (LinPEAS, pspy, etc.)", lambda c: tool_management.download_tools("linux")),
+            "2": ("Windows Tools (WinPEAS, Mimikatz, etc.)", lambda c: tool_management.download_tools("windows")),
+            "3": ("AD Tools (BloodHound, Rubeus, etc.)", lambda c: tool_management.download_tools("ad")),
+            "4": ("Download All", lambda c: tool_management.download_tools("all")),
         },
         "Info": {
             "5": ("List Available Tools", wrap_list_tools),

@@ -67,31 +67,19 @@ def download_tools(toolset, force=False):
         list: Paths to downloaded tools
     """
 
-    if toolset == "windows":
-        tools_dict = WINDOWS_TOOLS
-        tool_type = "Available Windows Tools"
-    elif toolset == "linux":
-        tools_dict = LINUX_TOOLS
-        tool_type = "Avalable Linux Tools"
-    elif toolset == "ad":
-        tools_dict = AD_TOOLS
-        tool_type = "Available AD Tools"
-    elif toolset == "all":
-        tools_dict = {**WINDOWS_TOOLS, **LINUX_TOOLS, **AD_TOOLS}
-        tool_type = "All Available Tools"
-    else:
-        print(f"{Colors.RED}[!] Unknown toolset: {toolset}{Colors.NC}")
+    if toolset == None:
         return []
 
     lab_root = find_lab_root()
     tools_dir = lab_root / "server" / "serve" / "tools"
+    toolset_info = check_toolset(toolset)
     
     # Create tools directory if it doesn't exist
     tools_dir.mkdir(parents=True, exist_ok=True)
     
     print(f"\n{Colors.BLUE}╔══════════════════════════════════════════╗{Colors.NC}")
 
-    print(f"{Colors.BLUE}║       Downloading {tool_type} Tools               ║{Colors.NC}")
+    print(f"{Colors.BLUE}║       Downloading {toolset_info["tools"]} Tools               ║{Colors.NC}")
     print(f"{Colors.BLUE}╚══════════════════════════════════════════╝{Colors.NC}\n")
     
     print(f"{Colors.CYAN}[*] These tools run ON target Windows machines{Colors.NC}")
@@ -101,7 +89,7 @@ def download_tools(toolset, force=False):
     skipped = []
     failed = []
     
-    for filename, url in tools_dict.items():
+    for filename, url in toolset_info["toolset"].items():
         dest = tools_dir / filename
         
         # Check if file exists and skip if not forcing
@@ -147,30 +135,15 @@ def list_tools(toolset):
     """
     lab_root = find_lab_root()
     tools_dir = lab_root / "server" / "serve" / "tools"
-
-    if toolset == "windows":
-        tools_dict = WINDOWS_TOOLS
-        tool_type = "Available Windows Tools"
-    elif toolset == "linux":
-        tools_dict = LINUX_TOOLS
-        tool_type = "Avalable Linux Tools"
-    elif toolset == "ad":
-        tools_dict = AD_TOOLS
-        tool_type = "Available AD Tools"
-    elif toolset == "all":
-        tools_dict = {**WINDOWS_TOOLS, **LINUX_TOOLS, **AD_TOOLS}
-        tool_type = "All Available Tools"
-    else:
-        print(f"{Colors.RED}[!] Unknown toolset: {toolset}{Colors.NC}")
-        return []
+    toolset_info = check_toolset(toolset)
     
     print(f"\n{Colors.CYAN}╔══════════════════════════════════════════╗{Colors.NC}")
-    print(f"{Colors.CYAN}║         {tool_type}               ║{Colors.NC}")
+    print(f"{Colors.CYAN}║         {toolset_info["title"]}               ║{Colors.NC}")
     print(f"{Colors.CYAN}╚══════════════════════════════════════════╝{Colors.NC}\n")
     
     status = {}
     
-    for filename,url in tools_dict:
+    for filename,url in toolset_info["toolset"].items():
         dest = tools_dir / filename
         exists = dest.exists()
         
@@ -193,8 +166,6 @@ def list_tools(toolset):
     
     return status
 
-
-
 def remove_tools(toolset):
     """
     Remove all downloaded AD tools.
@@ -203,26 +174,15 @@ def remove_tools(toolset):
         int: Number of tools removed
     """
 
-    if toolset == "windows":
-        tools_dict = WINDOWS_TOOLS
-        tool_type = "Windows"
-    elif toolset == "linux":
-        tools_dict = LINUX_TOOLS
-        tool_type = "Linux"
-    elif toolset == "ad":
-        tools_dict = AD_TOOLS
-        tool_type = "AD"
-    elif toolset == "all":
-        tools_dict = {**WINDOWS_TOOLS, **LINUX_TOOLS, **AD_TOOLS}
-        tool_type = "all"
-    else:
-        print(f"{Colors.RED}[!] Unknown toolset: {toolset}{Colors.NC}")
-        return []
+    if toolset == None:
+        return 0
+    
+    toolset_info = check_toolset(toolset)
 
     lab_root = find_lab_root()
     tools_dir = lab_root / "server" / "serve" / "tools"
     
-    print(f"\n{Colors.YELLOW}[!] This will remove {tool_type} downloaded tools{Colors.NC}")
+    print(f"\n{Colors.YELLOW}[!] This will remove {toolset_info["tools"]} downloaded tools{Colors.NC}")
     print(f"{Colors.YELLOW}Continue? (y/n):{Colors.NC} ", end="")
     
     if input().strip().lower() != 'y':
@@ -231,7 +191,7 @@ def remove_tools(toolset):
     
     removed = 0
     
-    for filename in tools_dict.keys():
+    for filename in toolset_info["toolset"].keys():
         dest = tools_dir / filename
         if dest.exists():
             try:
@@ -248,3 +208,30 @@ def remove_tools(toolset):
     
     return removed
 
+def check_toolset(toolset):
+    if toolset == "windows":
+        tools_dict = WINDOWS_TOOLS
+        title = "Available Windows Tools"
+        tools="Windows"
+    elif toolset == "linux":
+        tools_dict = LINUX_TOOLS
+        title = "Available Linux Tools"
+        tools="Linux"
+    elif toolset == "ad":
+        tools_dict = AD_TOOLS
+        title = "Available AD Tools"
+        tools="AD"
+    elif toolset == "all":
+        tools_dict = {**WINDOWS_TOOLS, **LINUX_TOOLS, **AD_TOOLS}
+        title = "All Available Tools"
+        tools="All"
+    else:
+        print(f"{Colors.RED}[!] Unknown toolset: {toolset}{Colors.NC}")
+        return {}
+    toolset_return = {
+        "toolset": tools_dict,
+        "title": title,
+        "tools": tools,
+    }
+    
+    return toolset_return
