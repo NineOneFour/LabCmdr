@@ -11,6 +11,7 @@ from datetime import datetime
 
 from ..config import Colors
 from ..core.context import load_lab_config, save_lab_config
+from ..utils import menu_utils
 
 
 # =========================
@@ -264,9 +265,7 @@ def view_config(config=None):
     if config is None:
         config = load_lab_config()
     
-    print(f"\n{Colors.CYAN}╔══════════════════════════════════════════╗{Colors.NC}")
-    print(f"{Colors.CYAN}║         Current Configuration            ║{Colors.NC}")
-    print(f"{Colors.CYAN}╚══════════════════════════════════════════╝{Colors.NC}\n")
+    menu_utils.print_title("Current Configuration","CYAN")
     
     # Metadata section
     print(f"{Colors.CYAN}═══ Metadata ═══{Colors.NC}")

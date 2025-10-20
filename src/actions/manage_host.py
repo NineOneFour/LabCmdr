@@ -10,6 +10,8 @@ import subprocess
 from ..config import Colors
 from ..core.context import load_lab_config
 from ..core.config_manager import get_config_value
+from ..utils import menu_utils
+
 
 
 HOSTS_PATH = get_config_value("system.hosts_file", "/etc/hosts")
@@ -36,9 +38,7 @@ def update_hosts():
     """
     config = load_lab_config()
     
-    print(f"\n{Colors.BLUE}╔══════════════════════════════════════════╗{Colors.NC}")
-    print(f"{Colors.BLUE}║         /etc/hosts Update                ║{Colors.NC}")
-    print(f"{Colors.BLUE}╚══════════════════════════════════════════╝{Colors.NC}")
+    menu_utils.print_title("/etc/hosts Update","BLUE")
     
     lab_name = config["metadata"].get("name", "")
     ip = config["network"].get("ip_address", "")
@@ -174,9 +174,7 @@ def remove_from_hosts():
                    config["metadata"].get("challenge_name") or 
                    "unnamed_lab")
     
-    print(f"\n{Colors.BLUE}╔══════════════════════════════════════════╗{Colors.NC}")
-    print(f"{Colors.BLUE}║      Remove from /etc/hosts              ║{Colors.NC}")
-    print(f"{Colors.BLUE}╚══════════════════════════════════════════╝{Colors.NC}")
+    menu_utils.print_title("Remove from /etc/hosts","BLUE")
     
     print(f"\n{Colors.CYAN}This will remove entries for lab: {Colors.YELLOW}{lab_name}{Colors.NC}")
     print(f"{Colors.YELLOW}Continue? (y/n):{Colors.NC} ", end="")

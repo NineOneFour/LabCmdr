@@ -40,6 +40,10 @@ LAB_CONFIG = {
         "username": "",                # Collected if has_credentials = yes
         "password": ""                 # Collected if has_credentials = yes
     },
+    "server": {
+        "auto-enabled": False,         # Serve files via HTTP server
+        "port": None,                  # Port to run HTTP server on
+    },
     "runtime": {
         "server_running": False,       # Is HTTP server currently running
         "server_port": None,           # Port server is running on

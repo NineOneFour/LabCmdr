@@ -5,6 +5,7 @@ Handles dynamic context blocks and headers for menu system
 
 from ..config import Colors
 from ..core.http_server import get_interface_ip
+from ..utils import menu_utils
 
 
 def get_attacker_ip(config):
@@ -48,12 +49,8 @@ def main_header(config, title):
         config: Lab configuration dictionary
         title: Title text to display
     """
-    inner_width = 40
-    text = f"LabCmdr - {title}"
-    padded = text.center(inner_width)
-    print(f"{Colors.BLUE}╔{'═' * (inner_width + 2)}╗{Colors.NC}")
-    print(f"{Colors.BLUE}║ {padded} ║{Colors.NC}")
-    print(f"{Colors.BLUE}╚{'═' * (inner_width + 2)}╝{Colors.NC}")
+    menu_utils.print_title(f"LabCmdr - {title}","BLUE")
+
 
 
 def submenu_header(config, title):
@@ -64,9 +61,7 @@ def submenu_header(config, title):
         config: Lab configuration dictionary
         title: Title text to display
     """
-    print(f"\n{Colors.BLUE}╔══════════════════════════════════════════╗{Colors.NC}")
-    print(f"{Colors.BLUE}║ {title:<41}║{Colors.NC}")
-    print(f"{Colors.BLUE}╚══════════════════════════════════════════╝{Colors.NC}")
+    menu_utils.print_title(f"{title}","BLUE")
 
 
 # ======================

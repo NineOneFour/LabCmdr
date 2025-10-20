@@ -17,6 +17,7 @@ from ..config import Colors
 from ..core.context import load_lab_config, save_lab_config, find_lab_root
 from ..core.http_server import start_server, check_port_available, get_interface_ip
 from ..core.config_manager import get_default_port
+from ..utils import menu_utils
 
 
 # Global state
@@ -107,9 +108,9 @@ def start_lab_server(port=None):
         # Register cleanup handlers
         _register_cleanup_handlers()
         
-        print(f"\n{Colors.GREEN}╔══════════════════════════════════════════╗{Colors.NC}")
-        print(f"{Colors.GREEN}║     Server Started Successfully!         ║{Colors.NC}")
-        print(f"{Colors.GREEN}╚══════════════════════════════════════════╝{Colors.NC}\n")
+
+        menu_utils.print_title("Server Started Successfully!","GREEN")
+
         
         print(f"{Colors.CYAN}Server running in background{Colors.NC}")
         print(f"{Colors.CYAN}Use 'Stop Server' menu option to shut down{Colors.NC}\n")
@@ -285,9 +286,7 @@ def view_server_log(live=False):
         print(f"{Colors.YELLOW}[!] Log file not found: {log_path}{Colors.NC}")
         return
     
-    print(f"\n{Colors.CYAN}╔══════════════════════════════════════════╗{Colors.NC}")
-    print(f"{Colors.CYAN}║         Server Log                       ║{Colors.NC}")
-    print(f"{Colors.CYAN}╚══════════════════════════════════════════╝{Colors.NC}\n")
+    menu_utils.print_title("Server Log","CYAN")
     
     try:
         if live:

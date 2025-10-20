@@ -22,9 +22,6 @@ from .wrappers import (
     wrap_run_full_scan,
     wrap_run_udp_scan,
     wrap_view_scan_results,
-    wrap_remove_all_tools,
-    wrap_download_all_tools,
-    wrap_list_tools,
     wrap_open_notes,
     wrap_open_scans,
     wrap_show_lab_info,
@@ -140,32 +137,27 @@ SCANNING_MENU = {
 # ======================
 
 TOOLS_MENU = {
-    "title": "Download Tools",
+    "title": "Manage Tools",
     "items": {
-        "Tool Categories": {
-            "1": ("Linux Tools (LinPEAS, pspy, etc.)", lambda c: tool_management.download_tools("linux")),
-            "2": ("Windows Tools (WinPEAS, Mimikatz, etc.)", lambda c: tool_management.download_tools("windows")),
-            "3": ("AD Tools (BloodHound, Rubeus, etc.)", lambda c: tool_management.download_tools("ad")),
+        "Download Tools": {
+            "1": ("Download Linux Tools (LinPEAS, pspy, etc.)", lambda c: tool_management.download_tools("linux")),
+            "2": ("Download Windows Tools (WinPEAS, Mimikatz, etc.)", lambda c: tool_management.download_tools("windows")),
+            "3": ("Download AD Tools (BloodHound, Rubeus, etc.)", lambda c: tool_management.download_tools("ad")),
             "4": ("Download All", lambda c: tool_management.download_tools("all")),
         },
+        "Remove Tools": {
+            "5": ("Remove Linux Tools", lambda c: tool_management.remove_tools("linux")),
+            "6": ("Remove Windows Tools", lambda c: tool_management.remove_tools("linux")),
+            "7": ("Remove AD Tools", lambda c: tool_management.remove_tools("linux")),
+            "8": ("Remove All Tools", lambda c: tool_management.remove_tools("all")),
+        },
         "Info": {
-            "5": ("List Available Tools", wrap_list_tools),
+            "9": ("List Available Tools", lambda c: tool_management.list_tools('all')),
         },
 
     }
 }
 
-REMOVE_TOOLS_MENU = {
-    "title": "Remove Tools",
-    "items": {
-        "Tool Categories": {
-            "1": ("Linux Tools", download_lin.remove_linux_tools),
-            "2": ("Windows Tools", download_win.remove_windows_tools),
-            "3": ("AD Tools", download_ad.remove_ad_tools),
-            "4": ("Remove All Tools", wrap_remove_all_tools),
-        },
-    }
-} 
 
 
 # ======================

@@ -3,6 +3,7 @@ import urllib.request
 from pathlib import Path
 from ..config import Colors
 from ..core.context import find_lab_root
+from ..utils import menu_utils
 
 AD_TOOLS = {
     "SharpHound.exe": "https://github.com/BloodHoundAD/BloodHound/raw/master/Collectors/SharpHound.exe",
@@ -77,10 +78,7 @@ def download_tools(toolset, force=False):
     # Create tools directory if it doesn't exist
     tools_dir.mkdir(parents=True, exist_ok=True)
     
-    print(f"\n{Colors.BLUE}╔══════════════════════════════════════════╗{Colors.NC}")
-
-    print(f"{Colors.BLUE}║       Downloading {toolset_info["tools"]} Tools               ║{Colors.NC}")
-    print(f"{Colors.BLUE}╚══════════════════════════════════════════╝{Colors.NC}\n")
+    menu_utils.print_title(f"Downloading {toolset_info["tools"]} Tools","CYAN")
     
     print(f"{Colors.CYAN}[*] These tools run ON target Windows machines{Colors.NC}")
     print(f"{Colors.CYAN}[*] BloodHound GUI should be installed on your attacking machine{Colors.NC}\n")
@@ -137,9 +135,7 @@ def list_tools(toolset):
     tools_dir = lab_root / "server" / "serve" / "tools"
     toolset_info = check_toolset(toolset)
     
-    print(f"\n{Colors.CYAN}╔══════════════════════════════════════════╗{Colors.NC}")
-    print(f"{Colors.CYAN}║         {toolset_info["title"]}               ║{Colors.NC}")
-    print(f"{Colors.CYAN}╚══════════════════════════════════════════╝{Colors.NC}\n")
+    menu_utils.print_title(f"{toolset_info["title"]}","CYAN")
     
     status = {}
     

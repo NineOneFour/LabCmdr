@@ -1,0 +1,4 @@
+spray attacks
+I could probably automate relay attacks, might need some more research
+sudo 
+sql injection?
