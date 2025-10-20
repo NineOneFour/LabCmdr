@@ -10,7 +10,7 @@ import tty
 
 from ..config import Colors
 from ..core.context import load_lab_config
-
+from ..utils import menu_utils
 
 def clear_screen():
     """Clear the terminal screen"""
@@ -166,10 +166,8 @@ def run_menu(menu, header_func=None, config=None, depth=0):
             header_func(config, title)
         else:
             # Use simple header for submenus
-            print(f"\n{Colors.BLUE}╔══════════════════════════════════════════╗{Colors.NC}")
-            print(f"{Colors.BLUE}║ {title:<41}║{Colors.NC}")
-            print(f"{Colors.BLUE}╚══════════════════════════════════════════╝{Colors.NC}")
-        
+            menu_utils.print_title(title, "BLUE")
+
         # Render context block if present
         if context_block or (depth == 0):
             from .context import render_context
